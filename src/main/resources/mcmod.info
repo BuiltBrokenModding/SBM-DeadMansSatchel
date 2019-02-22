@@ -1,0 +1,16 @@
+[
+{
+  "modid": "deadmanssatchel",
+  "name": "Dead Man's Satchel",
+  "description": "Adds a highly configurable satchel that holds items after death.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BuiltBrokenModding", "its_meow"],
+  "credits": "BuiltBrokenModding/DarkGuardsman for commission, its_meow for programming and art.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
