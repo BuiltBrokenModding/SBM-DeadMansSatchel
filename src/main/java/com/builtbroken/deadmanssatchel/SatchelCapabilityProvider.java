@@ -16,7 +16,7 @@ public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSeria
 	
 	public SatchelCapabilityProvider(ItemStack stack) {
 		this.stack = stack;
-		this.handler = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new ItemStackHandler(6));
+		this.handler = new ItemStackHandler(6);
 	}
 	
     @Override
@@ -41,7 +41,7 @@ public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSeria
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		if (nbt != null) {
-            handler.deserializeNBT((NBTTagCompound) nbt.getTag("items"));
+            handler.deserializeNBT(nbt);
         }
 	}
 
