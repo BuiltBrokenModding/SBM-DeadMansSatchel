@@ -12,10 +12,11 @@ import net.minecraftforge.items.ItemStackHandler;
 public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
 
 	private ItemStack stack;
-	private Object handler = null;
+	private ItemStackHandler handler = null;
 	
 	public SatchelCapabilityProvider(ItemStack stack) {
 		this.stack = stack;
+		this.handler = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new ItemStackHandler(6));
 	}
 	
     @Override
@@ -26,9 +27,6 @@ public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSeria
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (hasCapability(capability, facing)) {
-        	if(handler == null) {
-        		handler = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new ItemStackHandler(6));
-        	}
             return (T) handler;
         }
 
@@ -37,13 +35,13 @@ public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSeria
 
 	@Override
 	public NBTTagCompound serializeNBT() {
-		return ((ItemStackHandler) handler).serializeNBT();
+		return handler.serializeNBT();
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		if (nbt.hasKey("items")) {
-            ((ItemStackHandler) handler).deserializeNBT((NBTTagCompound) nbt.getTag("items"));
+		if (nbt != null) {
+            handler.deserializeNBT((NBTTagCompound) nbt.getTag("items"));
         }
 	}
 
