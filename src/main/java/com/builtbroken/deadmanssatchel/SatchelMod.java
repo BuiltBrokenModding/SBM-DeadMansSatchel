@@ -8,6 +8,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -65,26 +68,27 @@ public class SatchelMod {
 			}
 		}
 		for(int i = 0; i < toRemove.size(); i++) {
-			System.out.println("test100");
 			event.getDrops().remove(toRemove.get(i));
 			ItemStack stack = toRemove.get(i).getItem();
-			stack.writeToNBT(player.getEntityData().getCompoundTag("satchelstack" + i));
+			NBTTagList tagList = new NBTTagList();
+			tagList.appendTag(stack.writeToNBT(new NBTTagCompound()));
+			player.getEntityData().setTag("satchelData", tagList);
 			if(i == 0) {
 				player.getEntityData().setBoolean("hasSatchel", true);
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void playerCloned(PlayerEvent.Clone event) {
 		if(event.isWasDeath()) { // oh god the tenses
-			EntityPlayer player = event.getEntityPlayer();
+			EntityPlayer player = event.getOriginal();
 			if(player.getEntityData().getBoolean("hasSatchel")) {
-				for(String key : player.getEntityData().getKeySet()) {
-					if(key.startsWith("satchelstack")) {
-						ItemStack stack = new ItemStack(SatchelMod.satchel);
-						stack.deserializeNBT(player.getEntityData().getCompoundTag(key));
-					}
+				NBTTagList tagList = player.getEntityData().getTagList("satchelData", Constants.NBT.TAG_COMPOUND);
+				for(int i = 0; i < tagList.tagCount(); i++) {
+					ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
+					event.getEntityPlayer().addItemStackToInventory(stack);
+					tagList.removeTag(i);
 				}
 			}
 		}

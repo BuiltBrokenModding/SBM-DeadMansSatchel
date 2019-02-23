@@ -13,7 +13,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerSatchel extends Container {
 
-    private static final int SIZE = 6;
+    public static final int SIZE = 6;
 	private ItemStack stack;
 
     public ContainerSatchel(IInventory playerInventory, ItemStack stack) {

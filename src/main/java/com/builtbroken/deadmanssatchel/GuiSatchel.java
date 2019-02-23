@@ -19,6 +19,7 @@ public class GuiSatchel extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        this.drawDefaultBackground();
         mc.getTextureManager().bindTexture(background);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         for(int i = 0; i < inventorySlots.getInventory().size() - 36; i++) {
@@ -27,4 +28,11 @@ public class GuiSatchel extends GuiContainer {
         	drawTexturedModalRect(guiLeft + 7 + xCoord, guiTop + 5 + yCoord, 7, 68, 18, 18); // 7,68 is a slot on texture
         }
     }
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+    
 }

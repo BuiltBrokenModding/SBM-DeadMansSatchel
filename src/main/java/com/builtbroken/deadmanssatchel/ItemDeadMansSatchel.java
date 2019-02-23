@@ -51,7 +51,7 @@ public class ItemDeadMansSatchel extends Item {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-		return new SatchelCapabilityProvider(stack);
+		return new SatchelCapabilityProvider();
 	}
 
 	@Override
