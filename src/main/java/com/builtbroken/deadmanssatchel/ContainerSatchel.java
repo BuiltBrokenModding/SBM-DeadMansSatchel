@@ -18,7 +18,6 @@ public class ContainerSatchel extends Container {
 
     public ContainerSatchel(IInventory playerInventory, ItemStack stack) {
         this.stack = stack;
-
         addOwnSlots();
         addPlayerSlots(playerInventory);
     }
@@ -27,29 +26,29 @@ public class ContainerSatchel extends Container {
         // Slots for the main inventory
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                int x = 9 + col * 18;
-                int y = row * 18 + 70;
-                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+                int x = 8 + col * 18;
+                int y = row * 18 + 69;
+                this.addSlotToContainer(new SlotNoBag(playerInventory, col + row * 9 + 10, x, y));
             }
         }
 
         // Slots for the hotbar
         for (int row = 0; row < 9; ++row) {
-            int x = 9 + row * 18;
-            int y = 58 + 70;
-            this.addSlotToContainer(new Slot(playerInventory, row, x, y));
+            int x = 8 + row * 18;
+            int y = 58 + 69;
+            this.addSlotToContainer(new SlotNoBag(playerInventory, row, x, y));
         }
     }
 
     private void addOwnSlots() {
         IItemHandler itemHandler = this.stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        int x = 9;
+        int x = 8;
         int y = 6;
 
         // Add our own slots
         int slotIndex = 0;
         for (int i = 0; i < itemHandler.getSlots(); i++) {
-            addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));
+            addSlotToContainer(new SlotNoBagItemHandler(itemHandler, slotIndex, x, y));
             slotIndex++;
             x += 18;
         }
