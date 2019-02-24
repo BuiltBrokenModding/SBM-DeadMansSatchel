@@ -10,7 +10,7 @@ public class SatchelConfiguration extends Configuration {
 	}
 
 	public static SatchelWorldData populate(ItemDeadMansSatchel satchel, Configuration cfg) {
-		String cg = satchel.getRegistryName().getResourcePath();
+		String cg = satchel.getRegistryName().getPath();
 		String[] itemList = cfg.getStringList("item_list", cg, new String[0], "List of either accepted or blocked items.");
 		boolean isBlacklist = cfg.getBoolean("is_blacklist", cg, true, "If set to true the list of items will be treated as a blacklist.");
 		int openTimer = cfg.getInt("death_opening_delay", cg, 0, 0, Integer.MAX_VALUE, "The amount of time in seconds after death that the bag cannot be opened for. Set to 0 for none.");
@@ -29,7 +29,7 @@ public class SatchelConfiguration extends Configuration {
 	}
 
 	public static SatchelGlobalData populateGlobal(Configuration cfg, ItemDeadMansSatchel bag) {
-		String cg = bag.getRegistryName().getResourcePath();
+		String cg = bag.getRegistryName().getPath();
 		int slotCount = cfg.getInt("slot_count", cg, 6, 1, 27, "The amount of slots this bag has. Values larger than 27 would overflow the GUI.");
 		SatchelWorldData data = SatchelConfiguration.populate(bag, cfg);
 		return new SatchelGlobalData(data, slotCount);

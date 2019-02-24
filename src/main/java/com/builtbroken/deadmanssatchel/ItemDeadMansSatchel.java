@@ -21,7 +21,7 @@ public class ItemDeadMansSatchel extends Item {
 	public ItemDeadMansSatchel(String registryName) {
 		this.setMaxStackSize(1);
 		this.setRegistryName(registryName);
-		this.setUnlocalizedName("satchels." + registryName);
+		this.setTranslationKey("satchels." + registryName);
 		this.setCreativeTab(CreativeTabs.TOOLS);
 	}
 
