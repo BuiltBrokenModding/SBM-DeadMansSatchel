@@ -13,7 +13,7 @@ public class SlotNoBagItemHandler extends SlotItemHandler {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		if(stack.getItem() == SatchelMod.satchel) {
+		if(stack.getItem() instanceof ItemDeadMansSatchel) {
 			return false;
 		}
 		return super.isItemValid(stack);
@@ -21,7 +21,7 @@ public class SlotNoBagItemHandler extends SlotItemHandler {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer playerIn) {
-		if(this.getStack().getItem() == SatchelMod.satchel) {
+		if(this.getStack().getItem() instanceof ItemDeadMansSatchel) {
 			return false;
 		}
 		return super.canTakeStack(playerIn);

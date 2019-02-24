@@ -13,77 +13,73 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerSatchel extends Container {
 
-    public static final int SIZE = 6;
 	private ItemStack stack;
+	private int slotCount = 6;
 
-    public ContainerSatchel(IInventory playerInventory, ItemStack stack) {
-        this.stack = stack;
-        addOwnSlots();
-        addPlayerSlots(playerInventory);
-    }
+	public ContainerSatchel(IInventory playerInventory, ItemStack stack, int slotCount) {
+		this.stack = stack;
+		this.slotCount = slotCount;
+		addOwnSlots();
+		addPlayerSlots(playerInventory);
+	}
 
-    private void addPlayerSlots(IInventory playerInventory) {
-        // Slots for the main inventory
-        for (int row = 0; row < 3; ++row) {
-            for (int col = 0; col < 9; ++col) {
-                int x = 8 + col * 18;
-                int y = row * 18 + 69;
-                this.addSlotToContainer(new SlotNoBag(playerInventory, col + row * 9 + 10, x, y));
-            }
+	private void addPlayerSlots(IInventory playerInventory) {
+		// Slots for the main inventory
+		for (int row = 0; row < 3; ++row) {
+			for (int col = 0; col < 9; ++col) {
+				int x = 8 + col * 18;
+				int y = row * 18 + 69;
+				this.addSlotToContainer(new SlotNoBag(playerInventory, col + row * 9 + 10, x, y));
+			}
+		}
+
+		// Slots for the hotbar
+		for (int row = 0; row < 9; ++row) {
+			int x = 8 + row * 18;
+			int y = 58 + 69;
+			this.addSlotToContainer(new SlotNoBag(playerInventory, row, x, y));
+		}
+	}
+
+	private void addOwnSlots() {
+		IItemHandler itemHandler = this.stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        for(int i = 0; i < itemHandler.getSlots(); i++) {
+        	int yCoord = i/9 * 18; // 9 slots fit per row, 18 is size of the slot texture
+        	int xCoord = i%9 * 18; // 0, 1*18, 2*18, 3*18, loop per row
+        	this.addSlotToContainer(new SlotNoBagItemHandler(itemHandler, i, 8 + xCoord, 6 + yCoord));
         }
+	}
 
-        // Slots for the hotbar
-        for (int row = 0; row < 9; ++row) {
-            int x = 8 + row * 18;
-            int y = 58 + 69;
-            this.addSlotToContainer(new SlotNoBag(playerInventory, row, x, y));
-        }
-    }
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slot = this.inventorySlots.get(index);
 
-    private void addOwnSlots() {
-        IItemHandler itemHandler = this.stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        int x = 8;
-        int y = 6;
+		if (slot != null && slot.getHasStack()) {
+			ItemStack itemstack1 = slot.getStack();
+			itemstack = itemstack1.copy();
 
-        // Add our own slots
-        int slotIndex = 0;
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            addSlotToContainer(new SlotNoBagItemHandler(itemHandler, slotIndex, x, y));
-            slotIndex++;
-            x += 18;
-        }
-    }
+			if (index < slotCount) {
+				if (!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true)) {
+					return ItemStack.EMPTY;
+				}
+			} else if (!this.mergeItemStack(itemstack1, 0, slotCount, false)) {
+				return ItemStack.EMPTY;
+			}
 
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+			if (itemstack1.isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
+			} else {
+				slot.onSlotChanged();
+			}
+		}
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (index < ContainerSatchel.SIZE) {
-                if (!this.mergeItemStack(itemstack1, ContainerSatchel.SIZE, this.inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.mergeItemStack(itemstack1, 0, ContainerSatchel.SIZE, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
-        }
-
-        return itemstack;
-    }
+		return itemstack;
+	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return true;
 	}
-    
+
 }

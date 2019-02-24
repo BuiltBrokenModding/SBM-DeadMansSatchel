@@ -13,7 +13,7 @@ public class EventHandlerClient {
 	
 	@SubscribeEvent
 	public static void registerModels(final ModelRegistryEvent event) {
-		initModel(SatchelMod.satchel, 0);
+		initModel(SatchelMod.getBags()[0], 0);
 	}
 	
 	public static void initModel(Item item, int meta) {

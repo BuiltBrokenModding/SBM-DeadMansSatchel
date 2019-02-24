@@ -10,12 +10,15 @@ public class GuiProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		return new ContainerSatchel(player.inventory, player.getHeldItem(EnumHand.values()[x]));
+		ItemStack stack = player.getHeldItem(EnumHand.values()[x]);
+		int count = SatchelMod.getSlotCount((ItemDeadMansSatchel) stack.getItem());
+		return new ContainerSatchel(player.inventory, stack, count);
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		ItemStack stack = player.getHeldItem(EnumHand.values()[x]);
-		return new GuiSatchel(stack, new ContainerSatchel(player.inventory, stack));
+		int count = SatchelMod.getSlotCount((ItemDeadMansSatchel) stack.getItem());
+		return new GuiSatchel(stack, new ContainerSatchel(player.inventory, stack, count));
 	}
 }

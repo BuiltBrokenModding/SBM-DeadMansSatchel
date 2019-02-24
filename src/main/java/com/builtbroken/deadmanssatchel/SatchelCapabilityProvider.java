@@ -1,20 +1,18 @@
 package com.builtbroken.deadmanssatchel;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class SatchelCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
+public class SatchelCapabilityProvider implements ICapabilitySerializable<NBTTagCompound> {
 
 	private ItemStackHandler handler = null;
 
-	public SatchelCapabilityProvider() {
-		this.handler = new ItemStackHandler(ContainerSatchel.SIZE);
+	public SatchelCapabilityProvider(int slotCount) {
+		this.handler = new ItemStackHandler(slotCount);
 	}
 
 	@Override

@@ -18,10 +18,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemDeadMansSatchel extends Item {
 
-	public ItemDeadMansSatchel() {
+	public ItemDeadMansSatchel(String registryName) {
 		this.setMaxStackSize(1);
-		this.setRegistryName("deadmanssatchel");
-		this.setUnlocalizedName("deadmanssatchel");
+		this.setRegistryName(registryName);
+		this.setUnlocalizedName("satchels." + registryName);
 		this.setCreativeTab(CreativeTabs.TOOLS);
 	}
 
@@ -34,7 +34,7 @@ public class ItemDeadMansSatchel extends Item {
 		}
 		NBTTagCompound compound = stack.getTagCompound();
 		UUID playerUUID = player.getUUID(player.getGameProfile());
-		if(compound.hasKey("Owner")) {
+		if(compound.hasKey("Owner") && SatchelMod.getConfig(world, this).onlyOwner) {
 			UUID storedUUID = UUID.fromString(compound.getString("Owner"));
 			if(!playerUUID.equals(storedUUID)) {
 				return super.onItemRightClick(world, player, hand);
@@ -51,7 +51,7 @@ public class ItemDeadMansSatchel extends Item {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-		return new SatchelCapabilityProvider();
+		return new SatchelCapabilityProvider(SatchelMod.getSlotCount(this));
 	}
 
 	@Override
