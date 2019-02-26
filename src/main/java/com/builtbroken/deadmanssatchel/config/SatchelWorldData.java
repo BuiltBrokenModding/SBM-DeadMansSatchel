@@ -1,9 +1,14 @@
 package com.builtbroken.deadmanssatchel.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class SatchelWorldData {
+public class SatchelWorldData implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1434944660839249064L;
 	public final int openTimer;
 	public final int dropTimer;
 	public final float randomBagDropChance;

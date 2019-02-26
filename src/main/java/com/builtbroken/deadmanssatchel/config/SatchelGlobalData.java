@@ -1,9 +1,14 @@
 package com.builtbroken.deadmanssatchel.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class SatchelGlobalData extends SatchelWorldData {
+public class SatchelGlobalData extends SatchelWorldData implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7162301192278269430L;
 	public final int slotCount;
 	public final String[] itemList;
 	public final boolean isBlacklist;
