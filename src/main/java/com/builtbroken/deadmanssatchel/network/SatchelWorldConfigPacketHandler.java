@@ -5,7 +5,6 @@ import com.builtbroken.deadmanssatchel.config.SatchelWorldData;
 import com.builtbroken.deadmanssatchel.network.packet.SatchelWorldConfigurationPacket;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

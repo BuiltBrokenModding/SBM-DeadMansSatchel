@@ -1,14 +1,16 @@
 package com.builtbroken.deadmanssatchel;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Logger;
 
 import com.builtbroken.deadmanssatchel.config.SatchelConfiguration;
 import com.builtbroken.deadmanssatchel.config.SatchelGlobalData;
@@ -20,6 +22,8 @@ import com.builtbroken.deadmanssatchel.network.SatchelGlobalConfigPacketHandler;
 import com.builtbroken.deadmanssatchel.network.SatchelWorldConfigPacketHandler;
 import com.builtbroken.deadmanssatchel.network.packet.SatchelGlobalConfigurationPacket;
 import com.builtbroken.deadmanssatchel.network.packet.SatchelWorldConfigurationPacket;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +35,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -63,10 +66,7 @@ public class SatchelMod {
 	public static final String NAME = "Dead Man's Satchel";
 	public static final String VERSION = "1.0.0";
 
-	private static Logger logger;
-
 	private static Map<Integer, WorldBagConfiguration> configs = new HashMap<Integer, WorldBagConfiguration>();
-	private static Configuration globalConfig;
 	private static Map<ItemDeadMansSatchel, SatchelGlobalData> globalData = new HashMap<ItemDeadMansSatchel, SatchelGlobalData>();
 
 	private static File directory = null;
@@ -74,14 +74,30 @@ public class SatchelMod {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
 		directory = event.getModConfigurationDirectory();
-		globalConfig = new Configuration(new File(directory.getPath() + "/deadmanssatchel", "global.cfg")); 
-		SatchelConfiguration.loadConfig(globalConfig);
-		for(ItemDeadMansSatchel bag : SatchelMod.getBags()) {
-			globalData.put(bag, SatchelConfiguration.populateGlobal(globalConfig, bag));
+		String dir = directory.getPath() + "/deadmanssatchel/";
+		String fileName = "global.json";
+		String path = dir + fileName;
+		File global = new File(dir, fileName);
+		if(!global.exists()) {
+			global.mkdirs();
+			try {
+				global.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		SatchelConfiguration.saveConfig(globalConfig);
+		try {
+			JsonWriter writer = new JsonWriter(new FileWriter(path));
+			JsonReader reader = new JsonReader(new FileReader(path));
+			for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
+				globalData.put(satchel, SatchelConfiguration.populateGlobal(path, satchel, writer, reader));
+			}
+			writer.close();
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@EventHandler
@@ -93,14 +109,7 @@ public class SatchelMod {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		if(globalConfig.hasChanged()) {
-			globalConfig.save();
-		}
-		for(WorldBagConfiguration config : configs.values()) {
-			if(config.config.hasChanged()) {
-				config.config.save();
-			}
-		}
+		
 	}
 
 
@@ -115,17 +124,42 @@ public class SatchelMod {
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event) {
 		// Reload global data
-		SatchelConfiguration.loadConfig(globalConfig);
-		for(ItemDeadMansSatchel bag : SatchelMod.getBags()) {
-			globalData.put(bag, SatchelConfiguration.populateGlobal(globalConfig, bag));
+		String dir = directory.getPath() + "/deadmanssatchel/";
+		String fileName = "global.json";
+		String path = dir + fileName;
+		File global = new File(dir, fileName);
+		if(!global.exists()) {
+			global.mkdirs();
+			try {
+				global.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		SatchelConfiguration.saveConfig(globalConfig);
+		
+		try {
+			JsonWriter writer = new JsonWriter(new FileWriter(path));
+			JsonReader reader = new JsonReader(new FileReader(path));
+			for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
+				globalData.put(satchel, SatchelConfiguration.populateGlobal(path, satchel, writer, reader));
+			}
+			writer.close();
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// Create per-world configs
 		for(WorldServer world : DimensionManager.getWorlds()) {
 			int dimID = world.provider.getDimension();
-			Configuration config = new Configuration(new File(directory.getPath() + "/deadmanssatchel", "DIM" + dimID + ".cfg")); 
-			configs.put(dimID, new WorldBagConfiguration(config, SatchelMod.getBags())); // Config is loaded via worldbagconfiguration
+			String dirw = directory.getPath() + "/deadmanssatchel/";
+			String fileNamew = "DIM" + dimID + ".json";
+			String pathw = dirw + fileNamew; 
+			if(new File(dirw, fileNamew).exists()) {
+				configs.put(dimID, new WorldBagConfiguration(pathw, SatchelMod.getBags())); // Config is loaded via worldbagconfiguration
+			} else {
+				configs.put(dimID, new WorldBagConfiguration(path, SatchelMod.getBags())); // Load global instead
+			}
 		}
 	}
 
@@ -203,6 +237,14 @@ public class SatchelMod {
 
 	public static ItemDeadMansSatchel[] getBags() {
 		return new ItemDeadMansSatchel[] {satchelBasic};
+	}
+	
+	public static Set<String> getBagRegistryNames() {
+		Set<String> set = new HashSet<String>();
+		for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
+			set.add(satchel.getRegistryName().toString());
+		}
+		return set;
 	}
 
 	@SubscribeEvent

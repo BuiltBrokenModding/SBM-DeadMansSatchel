@@ -33,7 +33,6 @@ public class SatchelWorldConfigurationPacket implements IMessage {
 		buf.writeInt(data.dropTimer);
 		buf.writeInt(data.openTimer);
 		buf.writeFloat(data.randomBagDropChance);
-		buf.writeFloat(data.randomBagItemDropChance);
 	}
 	
 	@Override
@@ -45,9 +44,8 @@ public class SatchelWorldConfigurationPacket implements IMessage {
 		int dropTimer = buf.readInt(); // data.dropTimer
 		int openTimer = buf.readInt(); // data.openTimer
 		float randomBagDropChance = buf.readFloat(); // data.randomBagDropChance
-		float randomBagItemDropChance = buf.readFloat(); // data.randomBagItemDropChance
 		
-		this.data = new SatchelWorldData(openTimer, dropTimer, randomBagDropChance, randomBagItemDropChance, onlyOwner);
+		this.data = new SatchelWorldData(openTimer, dropTimer, randomBagDropChance, null, onlyOwner);
 	}
 
 }

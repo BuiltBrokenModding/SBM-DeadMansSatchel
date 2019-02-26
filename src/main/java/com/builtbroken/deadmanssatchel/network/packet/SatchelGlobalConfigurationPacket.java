@@ -30,7 +30,6 @@ public class SatchelGlobalConfigurationPacket implements IMessage {
 		buf.writeInt(data.dropTimer);
 		buf.writeInt(data.openTimer);
 		buf.writeFloat(data.randomBagDropChance);
-		buf.writeFloat(data.randomBagItemDropChance);
 
 		buf.writeInt(data.slotCount);
 		// Write itemlist
@@ -50,7 +49,6 @@ public class SatchelGlobalConfigurationPacket implements IMessage {
 		int dropTimer = buf.readInt(); // data.dropTimer
 		int openTimer = buf.readInt(); // data.openTimer
 		float randomBagDropChance = buf.readFloat(); // data.randomBagDropChance
-		float randomBagItemDropChance = buf.readFloat(); // data.randomBagItemDropChance
 
 
 		int slotCount = buf.readInt();
@@ -62,7 +60,7 @@ public class SatchelGlobalConfigurationPacket implements IMessage {
 			itemList[i] = buf.readCharSequence(stringLength, StandardCharsets.UTF_8).toString();
 		}
 		
-		this.data = new SatchelGlobalData(itemList, isBlackList, openTimer, dropTimer, slotCount, randomBagDropChance, randomBagItemDropChance, onlyOwner);
+		this.data = new SatchelGlobalData(itemList, isBlackList, openTimer, dropTimer, slotCount, randomBagDropChance, null, onlyOwner);
 	}
 
 }
