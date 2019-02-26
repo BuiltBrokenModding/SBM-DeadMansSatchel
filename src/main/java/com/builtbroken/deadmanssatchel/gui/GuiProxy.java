@@ -1,4 +1,8 @@
-package com.builtbroken.deadmanssatchel;
+package com.builtbroken.deadmanssatchel.gui;
+
+import com.builtbroken.deadmanssatchel.SatchelMod;
+import com.builtbroken.deadmanssatchel.item.ContainerSatchel;
+import com.builtbroken.deadmanssatchel.item.ItemDeadMansSatchel;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

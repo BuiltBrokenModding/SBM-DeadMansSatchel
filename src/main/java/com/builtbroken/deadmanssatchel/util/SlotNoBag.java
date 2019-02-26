@@ -1,14 +1,17 @@
-package com.builtbroken.deadmanssatchel;
+package com.builtbroken.deadmanssatchel.util;
+
+import com.builtbroken.deadmanssatchel.item.ItemDeadMansSatchel;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotNoBagItemHandler extends SlotItemHandler {
-	
-	public SlotNoBagItemHandler(IItemHandler handler, int index, int xPosition, int yPosition) {
-		super(handler, index, xPosition, yPosition);
+public class SlotNoBag extends Slot {
+
+	public SlotNoBag(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+		super(inventoryIn, index, xPosition, yPosition);
 	}
 
 	@Override
@@ -27,4 +30,6 @@ public class SlotNoBagItemHandler extends SlotItemHandler {
 		return super.canTakeStack(playerIn);
 	}
 	
+	
+
 }

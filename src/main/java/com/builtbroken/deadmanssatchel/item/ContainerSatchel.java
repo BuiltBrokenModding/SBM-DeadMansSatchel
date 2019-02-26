@@ -1,4 +1,7 @@
-package com.builtbroken.deadmanssatchel;
+package com.builtbroken.deadmanssatchel.item;
+
+import com.builtbroken.deadmanssatchel.util.SlotNoBag;
+import com.builtbroken.deadmanssatchel.util.SlotSatchel;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,7 +49,7 @@ public class ContainerSatchel extends Container {
         for(int i = 0; i < itemHandler.getSlots(); i++) {
         	int yCoord = i/9 * 18; // 9 slots fit per row, 18 is size of the slot texture
         	int xCoord = i%9 * 18; // 0, 1*18, 2*18, 3*18, loop per row
-        	this.addSlotToContainer(new SlotNoBagItemHandler(itemHandler, i, 8 + xCoord, 6 + yCoord));
+        	this.addSlotToContainer(new SlotSatchel(itemHandler, i, 8 + xCoord, 6 + yCoord, stack));
         }
 	}
 

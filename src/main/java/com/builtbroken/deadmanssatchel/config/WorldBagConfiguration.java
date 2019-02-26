@@ -1,8 +1,9 @@
-package com.builtbroken.deadmanssatchel;
+package com.builtbroken.deadmanssatchel.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.builtbroken.deadmanssatchel.item.ItemDeadMansSatchel;
 import com.google.common.collect.Lists;
 
 import akka.util.Collections;

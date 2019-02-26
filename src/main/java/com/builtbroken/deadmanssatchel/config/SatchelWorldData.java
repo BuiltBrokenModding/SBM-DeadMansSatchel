@@ -1,19 +1,14 @@
-package com.builtbroken.deadmanssatchel;
+package com.builtbroken.deadmanssatchel.config;
 
 public class SatchelWorldData {
 	
-	
-	public final String[] itemList;
-	public final boolean isBlacklist;
 	public final int openTimer;
 	public final int dropTimer;
 	public final float randomBagDropChance;
 	public final float randomBagItemDropChance;
 	public final boolean onlyOwner;
 	
-	public SatchelWorldData(String[] itemList, boolean isBlacklist, int openTimer, int dropTimer, float randomBagDropChance, float randomBagItemDropChance, boolean onlyOwner) {
-		this.itemList = itemList;
-		this.isBlacklist = isBlacklist;
+	public SatchelWorldData(int openTimer, int dropTimer, float randomBagDropChance, float randomBagItemDropChance, boolean onlyOwner) {
 		this.openTimer = openTimer;
 		this.dropTimer = dropTimer;
 		this.randomBagDropChance = randomBagDropChance;
