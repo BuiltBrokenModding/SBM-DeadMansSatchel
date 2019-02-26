@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ import com.builtbroken.deadmanssatchel.network.packet.SatchelGlobalConfiguration
 import com.builtbroken.deadmanssatchel.network.packet.SatchelWorldConfigurationPacket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -79,7 +82,6 @@ public class SatchelMod {
 		directory = event.getModConfigurationDirectory();
 		String dir = directory.getPath() + "/deadmanssatchel/";
 		String fileName = "global.json";
-		String path = dir + fileName;
 		File global = new File(dir, fileName);
 		if(!global.exists()) {
 			new File(dir).mkdirs();
@@ -88,31 +90,15 @@ public class SatchelMod {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			// Generate default configs
+			SatchelConfiguration.genDefaultGlobal(global);
 		}
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		HashMap<String, Float> map = new HashMap<String, Float>();
-		map.put("minecraft:example_item", (float) 0.3D);
-		map.put("minecraft:example_item2", (float) 0.5D);
-		System.out.println(gson.toJson(new SatchelGlobalData(new String[] {"minecraft:example_item", "minecraft:example_item2"}, true, 0, 0, 6, 0, map, true)));
-		System.exit(0);
-		try {
-			for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
-				SatchelGlobalData data = null;
-				do {
-					JsonReader reader = new JsonReader(new FileReader(path));
-					data = SatchelConfiguration.populateGlobal(path, satchel, reader);
-					reader.close();
-					if(data == null) {
-						JsonWriter writer = new JsonWriter(new FileWriter(path));
-						writer.setIndent("    ");
-						SatchelConfiguration.writeGlobal(path, satchel, writer);
-						writer.close();
-					}
-				} while(data == null);
-				globalData.put(satchel, data);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		
+		// Load configs
+		for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
+			SatchelGlobalData data = SatchelConfiguration.populateGlobal(global, satchel);
+			globalData.put(satchel, data);
 		}
 	}
 
@@ -151,6 +137,9 @@ public class SatchelMod {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			// Generate default configs
+			SatchelConfiguration.genDefaultGlobal(global);
 		}
 
 		try {
