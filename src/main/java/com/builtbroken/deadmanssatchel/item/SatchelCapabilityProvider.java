@@ -16,7 +16,7 @@ public class SatchelCapabilityProvider implements ICapabilitySerializable<NBTTag
 	private ItemStack stack;
 	private NBTTagCompound compound;
 	
-	public SatchelCapabilityProvider(ItemStack stack, @Nullable NBTTagCompound compound, int slotCount) {
+	public SatchelCapabilityProvider(ItemStack stack, NBTTagCompound compound, int slotCount) {
 		this.handler = new ItemStackHandler(slotCount);
 		this.stack = stack;
 		this.compound = compound;
