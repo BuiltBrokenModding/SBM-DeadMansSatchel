@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.builtbroken.deadmanssatchel.SatchelMod;
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -22,8 +21,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -50,7 +47,7 @@ public class ItemDeadMansSatchel extends Item {
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		NBTTagCompound compound = stack.getTagCompound();
-		UUID playerUUID = player.getUUID(player.getGameProfile());
+		UUID playerUUID = player.getGameProfile().getId();
 		if(compound.hasKey("Owner") && SatchelMod.getConfig(world, this).onlyOwner) {
 			UUID storedUUID = UUID.fromString(compound.getString("Owner"));
 			if(!playerUUID.equals(storedUUID)) {

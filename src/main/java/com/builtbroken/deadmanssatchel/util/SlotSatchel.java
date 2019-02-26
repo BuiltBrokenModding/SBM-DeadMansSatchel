@@ -7,7 +7,6 @@ import com.builtbroken.deadmanssatchel.config.SatchelGlobalData;
 import com.builtbroken.deadmanssatchel.item.ItemDeadMansSatchel;
 import com.google.common.collect.Lists;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;

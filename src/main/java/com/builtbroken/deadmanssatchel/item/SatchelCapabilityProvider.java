@@ -1,7 +1,5 @@
 package com.builtbroken.deadmanssatchel.item;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -14,12 +12,12 @@ public class SatchelCapabilityProvider implements ICapabilitySerializable<NBTTag
 
 	private ItemStackHandler handler;
 	private ItemStack stack;
-	private NBTTagCompound compound;
+	//private NBTTagCompound compound;
 	
 	public SatchelCapabilityProvider(ItemStack stack, NBTTagCompound compound, int slotCount) {
 		this.handler = new ItemStackHandler(slotCount);
 		this.stack = stack;
-		this.compound = compound;
+		//this.compound = compound;
 	}
 
 	@Override
@@ -30,7 +28,7 @@ public class SatchelCapabilityProvider implements ICapabilitySerializable<NBTTag
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (hasCapability(capability, facing)) {
-			return (T) handler;
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(handler);
 		}
 
 		return null;
