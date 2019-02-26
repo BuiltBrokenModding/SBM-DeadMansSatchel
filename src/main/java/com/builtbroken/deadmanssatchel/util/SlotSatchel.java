@@ -28,8 +28,8 @@ public class SlotSatchel extends SlotItemHandler {
 		
 		if(satchel.getItem() instanceof ItemDeadMansSatchel) {
 			SatchelGlobalData data = SatchelMod.getGlobalData((ItemDeadMansSatchel) satchel.getItem());
-			ArrayList<String> items = Lists.newArrayList(data.itemList);
-			if(data.isBlacklist) {
+			ArrayList<String> items = Lists.newArrayList(data.item_list);
+			if(data.is_blacklist) {
 				return !items.contains(stack.getItem().getRegistryName().toString());
 			} else {
 				return items.contains(stack.getItem().getRegistryName().toString());

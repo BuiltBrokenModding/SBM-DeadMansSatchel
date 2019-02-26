@@ -43,15 +43,19 @@ public class ItemDeadMansSatchel extends Item {
 			return super.onItemRightClick(world, player, hand);
 		}
 
+		boolean onlyOwner = SatchelMod.getConfig(world, this).only_owner_open;
+
 		if(!stack.hasTagCompound()) {
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		NBTTagCompound compound = stack.getTagCompound();
 		UUID playerUUID = player.getGameProfile().getId();
-		if(compound.hasKey("Owner") && SatchelMod.getConfig(world, this).onlyOwner) {
-			UUID storedUUID = UUID.fromString(compound.getString("Owner"));
-			if(!playerUUID.equals(storedUUID)) {
-				return super.onItemRightClick(world, player, hand);
+		if(compound.hasKey("Owner")) {
+			if(onlyOwner) {
+				UUID storedUUID = UUID.fromString(compound.getString("Owner"));
+				if(!playerUUID.equals(storedUUID)) {
+					return super.onItemRightClick(world, player, hand);
+				}
 			}
 		} else {
 			compound.setString("Owner", playerUUID.toString());
@@ -74,8 +78,8 @@ public class ItemDeadMansSatchel extends Item {
 			if(stack.getTagCompound().hasKey("Owner")) {
 				String uString = stack.getTagCompound().getString("Owner");
 				tooltip.add("Owner: " + uString);
-				
-				if(stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) && (!SatchelMod.getConfig(worldIn, (ItemDeadMansSatchel) stack.getItem()).onlyOwner || Minecraft.getMinecraft().player.getGameProfile().getId().equals(UUID.fromString(uString)))) {
+
+				if(stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) && (!SatchelMod.getConfig(worldIn, (ItemDeadMansSatchel) stack.getItem()).only_owner_open || Minecraft.getMinecraft().player.getGameProfile().getId().equals(UUID.fromString(uString)))) {
 					ItemStackHandler handler = (ItemStackHandler) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 					Map<String, Integer> items = new HashMap<String, Integer>();
 					for(int i = 0; i < handler.getSlots(); i++) {
@@ -89,13 +93,13 @@ public class ItemDeadMansSatchel extends Item {
 							}
 						}
 					}
-					
+
 					if(items.size() > 0) {
 						tooltip.add("Contains:");
 					} else {
 						tooltip.add("No contents");
 					}
-					
+
 					for(String key : items.keySet()) {
 						int count = items.get(key);
 						tooltip.add(count + "x" + I18n.format(key + ".name"));
