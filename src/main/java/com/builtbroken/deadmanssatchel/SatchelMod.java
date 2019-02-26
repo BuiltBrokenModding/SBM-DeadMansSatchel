@@ -247,7 +247,7 @@ public class SatchelMod {
 				toRemove.add(drop);
 			}
 		}
-		for(int i = 0; i < 1; i++) { // limit 1, staying in loop for future changes
+		for(int i = 0; i < toRemove.size(); i++) {
 			ItemStack stack = toRemove.get(i).getItem();
 			ItemDeadMansSatchel satchel = (ItemDeadMansSatchel) stack.getItem();
 			SatchelWorldData bagCfg = SatchelMod.getConfig(player.getEntityWorld(), satchel);
@@ -308,8 +308,9 @@ public class SatchelMod {
 				for(int i = 0; i < tagList.tagCount(); i++) {
 					ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
 					event.getEntityPlayer().addItemStackToInventory(stack);
-					tagList.removeTag(i);
 				}
+				player.getEntityData().removeTag("satchelData");
+				player.getEntityData().setBoolean("hasSatchel", false);
 			}
 		}
 	}
@@ -351,6 +352,9 @@ public class SatchelMod {
 	}
 
 	public static boolean canOpenBag(EntityPlayer player, ItemDeadMansSatchel satchel) {
+		if(player.isCreative()) {
+			return false;
+		}
 		/*if(SatchelMod.getConfig(player.getEntityWorld(), satchel).openTimer == 0) {
 			return true;
 		}*/ // cannot do this because otherwise if you change worlds you can avoid the timer
