@@ -247,6 +247,7 @@ public class SatchelMod {
 				toRemove.add(drop);
 			}
 		}
+		NBTTagList tagList = new NBTTagList();
 		for(int i = 0; i < toRemove.size(); i++) {
 			ItemStack stack = toRemove.get(i).getItem();
 			ItemDeadMansSatchel satchel = (ItemDeadMansSatchel) stack.getItem();
@@ -287,15 +288,14 @@ public class SatchelMod {
 						Pair<String, String> newPair = Pair.<String, String>of(player.getGameProfile().getId().toString(), satchel.getRegistryName().getPath());
 						reDropTimers.put(newPair, reDropTimer * 20);
 					}
-					NBTTagList tagList = new NBTTagList();
 					tagList.appendTag(stack.writeToNBT(new NBTTagCompound()));
-					player.getEntityData().setTag("satchelData", tagList);
-					if(i == 0) {
-						player.getEntityData().setBoolean("hasSatchel", true);
-					}
 					event.getDrops().remove(toRemove.get(i));
 				}
 			}
+		}
+		if(!tagList.isEmpty()) {
+			player.getEntityData().setTag("satchelData", tagList);
+			player.getEntityData().setBoolean("hasSatchel", true);
 		}
 	}
 
