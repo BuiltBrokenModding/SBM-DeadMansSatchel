@@ -1,17 +1,5 @@
 package com.builtbroken.deadmanssatchel;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-
 import com.builtbroken.deadmanssatchel.config.SatchelConfiguration;
 import com.builtbroken.deadmanssatchel.config.SatchelGlobalData;
 import com.builtbroken.deadmanssatchel.config.SatchelWorldData;
@@ -22,7 +10,6 @@ import com.builtbroken.deadmanssatchel.network.SatchelGlobalConfigPacketHandler;
 import com.builtbroken.deadmanssatchel.network.SatchelWorldConfigPacketHandler;
 import com.builtbroken.deadmanssatchel.network.packet.SatchelGlobalConfigurationPacket;
 import com.builtbroken.deadmanssatchel.network.packet.SatchelWorldConfigurationPacket;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,7 +28,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -53,22 +39,36 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = SatchelMod.MODID)
 @Mod(modid = SatchelMod.MODID, name = SatchelMod.NAME, version = SatchelMod.VERSION)
 public class SatchelMod {
 
-	@Instance(SatchelMod.MODID) 
+	@Instance(SatchelMod.MODID)
 	public static SatchelMod mod;
 
 	public static final String MODID = "deadmanssatchel";
 	public static final String NAME = "Dead Man's Satchel";
-	public static final String VERSION = "1.1.0";
+
+	public static final String MAJOR_VERSION = "@MAJOR@";
+	public static final String MINOR_VERSION = "@MINOR@";
+	public static final String REVISION_VERSION = "@REVIS@";
+	public static final String BUILD_VERSION = "@BUILD@";
+	public static final String MC_VERSION = "@MC@";
+	public static final String VERSION = MC_VERSION + "-" + MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION + "." + BUILD_VERSION;
+
+	public static final SimpleNetworkWrapper WRAPPER_INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SatchelMod.MODID);
 
 	private static File directory = null;
-	public static final SimpleNetworkWrapper WRAPPER_INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SatchelMod.MODID);
 	public static File globalFile = null;
-	
+
 	public static Logger logger;
 
 	@EventHandler
@@ -102,13 +102,7 @@ public class SatchelMod {
 		WRAPPER_INSTANCE.registerMessage(SatchelWorldConfigPacketHandler.class, SatchelWorldConfigurationPacket.class, 1, Side.CLIENT);
 	}
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-
-	}
-
-
-	/*                      
+	/*
 	 * ###################
 	 *   CONFIG HANDLING
 	 * ###################
@@ -139,7 +133,7 @@ public class SatchelMod {
 			} else {
 				configs.put(dimID, new WorldBagConfiguration(SatchelConfiguration.globalDataMap, false)); // Load global instead
 			}
-			
+
 			// Error handling
 			for(String name : SatchelMod.getBagRegistryNames()) {
 				if(!configs.get(dimID).satchels.containsKey(name)) {
@@ -176,7 +170,7 @@ public class SatchelMod {
 		}
 	}
 
-	/* 
+	/*
 	 * ###############################
 	 *              Getters
 	 * ###############################
@@ -204,7 +198,7 @@ public class SatchelMod {
 		}
 	}
 
-	/* 
+	/*
 	 * ###############################
 	 *           Client Sync
 	 * ###############################
@@ -240,12 +234,12 @@ public class SatchelMod {
 		globalData.put(bagName, data);
 	}
 
-	/*                      
+	/*
 	 * ###################
 	 *      REGISTRY
 	 * ###################
 	 */
-	
+
 	public static final ItemDeadMansSatchel satchelWeak = new ItemDeadMansSatchel("satchel_weak", 3);
 	public static final ItemDeadMansSatchel satchelBasic = new ItemDeadMansSatchel("deadmanssatchel", 6);
 	public static final ItemDeadMansSatchel satchelGood = new ItemDeadMansSatchel("satchel_good", 10);
@@ -270,7 +264,7 @@ public class SatchelMod {
 	}
 
 
-	/*                      
+	/*
 	 * ###################
 	 *      EVENTS
 	 * ###################
@@ -354,7 +348,7 @@ public class SatchelMod {
 	}
 
 	public static HashMap<Pair<String, String>, Integer> openTimers = new HashMap<Pair<String, String>, Integer>();
-	public static HashMap<Pair<String, String>, Integer> reDropTimers = new HashMap<Pair<String, String>, Integer>(); 
+	public static HashMap<Pair<String, String>, Integer> reDropTimers = new HashMap<Pair<String, String>, Integer>();
 
 	@SubscribeEvent
 	public static void onTick(ServerTickEvent event) {
