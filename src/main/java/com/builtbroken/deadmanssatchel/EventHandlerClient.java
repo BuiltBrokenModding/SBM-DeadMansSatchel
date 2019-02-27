@@ -1,5 +1,7 @@
 package com.builtbroken.deadmanssatchel;
 
+import com.builtbroken.deadmanssatchel.item.ItemDeadMansSatchel;
+
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -13,7 +15,9 @@ public class EventHandlerClient {
 	
 	@SubscribeEvent
 	public static void registerModels(final ModelRegistryEvent event) {
-		initModel(SatchelMod.getBags()[0], 0);
+		for(ItemDeadMansSatchel satchel : SatchelMod.getBags()) {
+			initModel(satchel, 0);;
+		}
 	}
 	
 	public static void initModel(Item item, int meta) {

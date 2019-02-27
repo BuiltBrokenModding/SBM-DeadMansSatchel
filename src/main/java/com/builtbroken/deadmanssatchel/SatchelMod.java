@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import com.builtbroken.deadmanssatchel.config.SatchelConfiguration;
 import com.builtbroken.deadmanssatchel.config.SatchelGlobalData;
@@ -61,18 +63,36 @@ public class SatchelMod {
 
 	public static final String MODID = "deadmanssatchel";
 	public static final String NAME = "Dead Man's Satchel";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.1.0";
 
 	private static File directory = null;
 	public static final SimpleNetworkWrapper WRAPPER_INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SatchelMod.MODID);
 	public static File globalFile = null;
+	
+	public static Logger logger;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		logger = event.getModLog();
 		directory = event.getModConfigurationDirectory();
-		globalFile = new File(directory.getPath() + "/deadmanssatchel/global.json");
+		globalFile = new File(directory.getPath() + "/deadmanssatchel/" + VERSION + "/global.json");
+		File configFolder = new File(directory.getPath() + "/deadmanssatchel/");
+		for(File file : configFolder.listFiles()) {
+			// Rename invalid files
+			if((file.getName().matches("DIM-?(\\d|\\#)+(.example)?.json") || file.getName().equals("global.json") || (file.isDirectory() && !file.getName().equals(VERSION))) && !file.getName().endsWith(".obsolete")) {
+				if(file.isDirectory()) {
+					for(File file2 : file.listFiles()) {
+						if((file2.getName().matches("DIM-?(\\d|\\#)+(.example)?.json") || file2.getName().equals("global.json")) && !file2.getName().endsWith(".obsolete")) {
+							file2.renameTo(new File(file2.getAbsolutePath() + ".obsolete"));
+						}
+					}
+				}
+				file.renameTo(new File(file.getAbsolutePath() + ".obsolete"));
+				logger.info("Obsolete configs found. Nothing to worry about, renaming them. Reconfiguration required if configs have been modified from defaults.");
+			}
+		}
 		SatchelMod.loadGlobalConfig();
-		SatchelConfiguration.genDefaultWorld(new File(directory.getPath() + "/deadmanssatchel/", "DIM#.example.json"));
+		SatchelConfiguration.genDefaultWorld(new File(directory.getPath() + "/deadmanssatchel/" + VERSION + "/", "DIM#.example.json"));
 	}
 
 	@EventHandler
@@ -107,18 +127,32 @@ public class SatchelMod {
 		// Create per-world configs
 		for(WorldServer world : DimensionManager.getWorlds()) {
 			int dimID = world.provider.getDimension();
-			String dir = directory.getPath() + "/deadmanssatchel/";
+			String dir = directory.getPath() + "/deadmanssatchel/"  + VERSION + "/";
 			File worldFile = new File(dir, "DIM" + dimID + ".json");
 			if(worldFile.exists()) {
 				configs.put(dimID, SatchelConfiguration.loadWorld(worldFile)); // Config is loaded via worldbagconfiguration
+				for(String name : SatchelMod.getBagRegistryNames()) { // Make sure all values are filled by global if they do not exist
+					if(!configs.get(dimID).satchels.containsKey(name)) {
+						configs.get(dimID).satchels.put(name, SatchelConfiguration.globalDataMap.get(name));
+					}
+				}
 			} else {
 				configs.put(dimID, new WorldBagConfiguration(SatchelConfiguration.globalDataMap, false)); // Load global instead
+			}
+			
+			// Error handling
+			for(String name : SatchelMod.getBagRegistryNames()) {
+				if(!configs.get(dimID).satchels.containsKey(name)) {
+					String errStr = "There was no valid global or world config for " + name + " loaded! Regenerate your global.json for " + MODID + " by deleting or renaming it!\nLocation: " + globalFile.getAbsolutePath();
+					logger.log(Level.FATAL, errStr);
+					throw new RuntimeException(errStr);
+				}
 			}
 		}
 	}
 
 	private static void loadGlobalConfig() {
-		String dir = directory.getPath() + "/deadmanssatchel/";
+		String dir = directory.getPath() + "/deadmanssatchel/"  + VERSION + "/";
 		File dirF = new File(dir);
 		if(!dirF.exists()) {
 			dirF.mkdirs();
@@ -211,11 +245,15 @@ public class SatchelMod {
 	 *      REGISTRY
 	 * ###################
 	 */
-
+	
+	public static final ItemDeadMansSatchel satchelWeak = new ItemDeadMansSatchel("satchel_weak", 3);
 	public static final ItemDeadMansSatchel satchelBasic = new ItemDeadMansSatchel("deadmanssatchel", 6);
+	public static final ItemDeadMansSatchel satchelGood = new ItemDeadMansSatchel("satchel_good", 10);
+	public static final ItemDeadMansSatchel satchelAdvanced = new ItemDeadMansSatchel("satchel_advanced", 14);
+	public static final ItemDeadMansSatchel satchelUltimate = new ItemDeadMansSatchel("satchel_ultimate", 18);
 
 	public static ItemDeadMansSatchel[] getBags() {
-		return new ItemDeadMansSatchel[] {satchelBasic};
+		return new ItemDeadMansSatchel[] {satchelBasic, satchelWeak, satchelAdvanced, satchelUltimate, satchelGood};
 	}
 
 	public static Set<String> getBagRegistryNames() {
