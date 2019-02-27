@@ -20,3 +20,11 @@ build
 # other
 eclipse
 run
+
+SBM-Dead-Mans-Satchel\.txt
+
+output/
+
+changelog\.html
+
+CompiledWith\.txt
