@@ -1,0 +1,9 @@
+{
+	"screens" : [
+		 {
+			"COMMENT" : "DEAD MAN SATCHEL SUPPORT", 
+			"class" : "com.builtbroken.deadmanssatchel.item.ContainerSatchel", 
+			"texture" : "deadmanssatchel:textures/gui/guibackground.png", 
+			"size" : [176, 151]
+		}]
+}
